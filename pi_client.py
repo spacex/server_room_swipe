@@ -25,24 +25,17 @@ def randomString(stringLength=6):
     letters = string.ascii_letters
     return ''.join(random.choice(letters) for i in range(stringLength))
 
-def request_create_user_and_badge():
-    new_badge = get_a_badge_reading()
+def request_create_user(new_badge):
     new_user_id = NEW_USER_PREFIX + randomString()
-    user_dict = { "username": new_user_id, "password": NEW_USER_PASSWORD }
+    user_dict = { "username": new_user_id, "password": NEW_USER_PASSWORD,
+            "badge_id": new_badge }
     r = requests.post(
         'http://localhost:5000/api/users',
         data=json.dumps(user_dict),
         headers={'Content-type': 'application/json'}
         )
+    print user_dict
     print r.text
-    badge_dict = { "username": new_user_id, "badge_id": new_badge }
-    r = requests.post(
-        'http://localhost:5000/api/badges',
-        data=json.dumps(badge_dict),
-        headers={'Content-type': 'application/json'}
-        )
-    print r.text
-    request_register_scan(new_badge)
 
 def get_a_badge_reading():
     decode_dict = {2:"1", 3:"2", 4:"3", 5:"4", 6:"5", 7:"6", 8:"7", 9:"8", 10:"9", 11:"0"}
@@ -72,9 +65,11 @@ def event_loop():
     while True:
         badge_read = get_a_badge_reading()
         if badge_read == PIONEER_BADGE:
-            request_create_user_and_badge()
-        else:
-            request_register_scan(badge_read)
+            # read the new badge
+            new_badge = get_a_badge_reading()
+            request_create_user(new_badge)
+            badge_read = new_badge
+        request_register_scan(badge_read)
 
 if __name__ == "__main__":
     event_loop()

@@ -16,9 +16,9 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     is_admin = db.Column(db.Boolean)
     email = db.Column(db.String(120), index=True, unique=True)
+    badge_id = db.Column(db.String(10), unique=True)
     token = db.Column(db.String(32), index=True, unique=True)
     token_expiration = db.Column(db.DateTime)
-    badges = db.relationship('Badge', backref='user', lazy=True)
 
     def __repr__(self):
         return 'User {}'.format(self.username)
@@ -30,7 +30,7 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
     def from_dict(self, data, new_user=False):
-        for field in ['username', 'email', 'about_me']:
+        for field in ['username', 'email', 'badge_id']:
             if field in data:
                 setattr(self, field, data[field])
         if new_user and 'password' in data:
@@ -40,6 +40,7 @@ class User(UserMixin, db.Model):
         data = {
 		'id': self.id,
 		'username': self.username,
+		'badge_id': self.badge_id,
                 }
         if include_email:
             data['email'] = self.email
@@ -62,36 +63,17 @@ class User(UserMixin, db.Model):
         user = User.query.filter_by(token=token).first()
         if user is None or user.token_expiration < datetime.utcnow():
             return None
-class Badge(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.Integer, db.ForeignKey('user.id'))
-    badge_id = db.Column(db.String(10), unique=True)
-    scans = db.relationship('Scan', backref='badge', lazy=True)
-
-    def __repr__(self):
-        return 'Badge {}'.format(self.badge_id)
-
-    def from_dict(self, data):
-        for field in ['badge_id', 'username']:
-            if field in data:
-                setattr(self, field, data[field])
-
-    def to_dict(self):
-        data = {
-		'badge_id': self.badge_id,
-		'username': self.username,
-                }
-        return data
-
-
 
 class Scan(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    badge_id = db.Column(db.String(10), db.ForeignKey('badge.badge_id'))
+    username = db.Column(db.Integer, db.ForeignKey('user.username'))
+    badge_id = db.Column(db.String(10), db.ForeignKey('user.badge_id'))
+
+    scanned_user = db.relationship("User", foreign_keys=[badge_id])
 
     def from_dict(self, data):
-        for field in ['badge_id', 'timestamp']:
+        for field in ['username', 'badge_id', 'timestamp']:
             if field in data:
                 if field == 'timestamp':
                     real_datetime = datetime.strptime(data[field], '%Y-%m-%dT%H:%M:%S.%f')
@@ -102,7 +84,12 @@ class Scan(db.Model):
     def to_dict(self):
         data = {
 		'badge_id': self.badge_id,
+		'username': self.username,
 		'timestamp': self.timestamp,
                 }
         return data
+
+class AdminView(ModelView):
+    def is_accessible(self):
+        return False
 

@@ -18,6 +18,7 @@ app.register_blueprint(api_bp, url_prefix='/api')
 
 from app import routes, models
 admin.add_view(ModelView(models.User, db.session))
-admin.add_view(ModelView(models.Badge, db.session))
 admin.add_view(ModelView(models.Scan, db.session))
+admin.add_view(ModelView(models.AdminView(User, db.session)))
+
 
