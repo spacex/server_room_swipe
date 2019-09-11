@@ -35,7 +35,7 @@ class User(UserMixin, db.Model):
         if new_user and 'password' in data:
             self.set_password(data['password'])
 
-    def to_dict(self, data, include_email=False):
+    def to_dict(self, include_email=False):
         data = {
 		'id': self.id,
 		'username': self.username,
@@ -63,23 +63,39 @@ class User(UserMixin, db.Model):
             return None
 class Badge(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    userid = db.Column(db.Integer, db.ForeignKey('user.id'))
-    id_str = db.Column(db.String(10), unique=True)
+    username = db.Column(db.Integer, db.ForeignKey('user.id'))
+    badge_id = db.Column(db.String(10), unique=True)
+    def from_dict(self, data):
+        for field in ['badge_id', 'username']:
+            if field in data:
+                setattr(self, field, data[field])
+
+    def to_dict(self):
+        data = {
+		'badge_id': self.badge_id,
+		'username': self.username,
+                }
+        return data
+
 
 
 class Scan(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    badge_id = db.Column(db.String(10), db.ForeignKey('badge.id_str'))
+    badge_id = db.Column(db.String(10), db.ForeignKey('badge.badge_id'))
 
     def from_dict(self, data):
         for field in ['badge_id', 'timestamp']:
             if field in data:
-                setattr(self, field, data[field])
+                if field == 'timestamp':
+                    real_datetime = datetime.strptime(data[field], '%Y-%m-%dT%H:%M:%S.%f')
+                    setattr(self, field, real_datetime)
+                else:
+                    setattr(self, field, data[field])
 
-    def to_dict(self, data):
+    def to_dict(self):
         data = {
-		'badge_id': self.id,
+		'badge_id': self.badge_id,
 		'timestamp': self.timestamp,
                 }
         return data
