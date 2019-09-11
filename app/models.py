@@ -18,9 +18,10 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(120), index=True, unique=True)
     token = db.Column(db.String(32), index=True, unique=True)
     token_expiration = db.Column(db.DateTime)
+    badges = db.relationship('Badge', backref='user', lazy=True)
 
     def __repr__(self):
-        return '<User {}>'.format(self.username)
+        return 'User {}'.format(self.username)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -65,6 +66,11 @@ class Badge(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.Integer, db.ForeignKey('user.id'))
     badge_id = db.Column(db.String(10), unique=True)
+    scans = db.relationship('Scan', backref='badge', lazy=True)
+
+    def __repr__(self):
+        return 'Badge {}'.format(self.badge_id)
+
     def from_dict(self, data):
         for field in ['badge_id', 'username']:
             if field in data:
@@ -99,8 +105,4 @@ class Scan(db.Model):
 		'timestamp': self.timestamp,
                 }
         return data
-
-
-
-
 
