@@ -17,8 +17,7 @@ from app.api import bp as api_bp
 app.register_blueprint(api_bp, url_prefix='/api')
 
 from app import routes, models
-admin.add_view(ModelView(models.User, db.session))
-admin.add_view(ModelView(models.Scan, db.session))
-admin.add_view(ModelView(models.AdminView(User, db.session)))
-
+admin.add_view(models.AdminView(models.User, db.session))
+admin.add_view(models.AdminView(models.Scan, db.session))
+admin.add_link(models.LogoutMenuLink(name='Logout', category='', url="/logout"))
 

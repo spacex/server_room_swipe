@@ -1,7 +1,10 @@
 from datetime import datetime, timedelta
 from app import db, login
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import UserMixin
+from flask_login import UserMixin, current_user
+from flask_admin import expose
+from flask_admin.contrib.sqla import ModelView
+from flask_admin.menu import MenuLink
 import base64
 import os
 
@@ -21,7 +24,7 @@ class User(UserMixin, db.Model):
     token_expiration = db.Column(db.DateTime)
 
     def __repr__(self):
-        return 'User {}'.format(self.username)
+        return '{}'.format(self.username)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -90,6 +93,16 @@ class Scan(db.Model):
         return data
 
 class AdminView(ModelView):
-    def is_accessible(self):
-        return False
+    @expose('/admin')
+    def index(self):
+        return self.render('admin')
 
+    def is_accessible(self):
+        return current_user.is_authenticated and current_user.is_admin
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for('login'))
+
+class LogoutMenuLink(MenuLink):
+    def is_accessible(self):
+        return current_user.is_authenticated  
