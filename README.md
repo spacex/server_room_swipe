@@ -30,6 +30,12 @@ Server Room Swipe
 - The server is available at the IP of the raspberry pi on port 80
 - `sudo ./quit.sh` to stop the server
 
+# Web Interface
+Navigate to the IP of host and you will be presented with a login page. Anyone
+who will be an admin will need to initially login using the pi's account. See
+above for where that info is stored. A user with admin rights is the only person
+that can add users and change passwords.
+
 # Pioneer badge
 This is the badge you use to introduce new badges to the system. First scan
 the pioneer badge, then scan the new persons badge. As of now, that scan
