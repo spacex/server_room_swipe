@@ -20,6 +20,9 @@ Server Room Swipe
 - `cd` into the repo
 - `echo <some_password> >new_user_pass` for a default new user password
 - `echo <some_badge_id> >pioneer_badge` for a default pioneer badge
+- `echo <pi_user_name> >pi_username` for the username the pi will have in the db
+- `echo <pi_user_pass> >pi_user_pass` for the pi's password in the db
+- `./reset_db.sh` to get a fresh db with just the pi's user account
 - `flask db init` creates database, only needs to be done once
 - `flask db migrate` migrates database if schema changes
 - `flask db upgrade` commits changes from migrate

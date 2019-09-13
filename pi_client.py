@@ -9,12 +9,7 @@ import requests
 import string
 import sys
 
-PIONEER_BADGE_FILE = "pioneer_badge"
-NEW_USER_PREFIX = "new_user_"
-NEW_USER_PASSWORD_FILE = "new_user_pass"
-MY_USER_PASSWORD_FILE = "pi_user_pass"
-MY_USERNAME = "badgeswiper"
-HOSTNAME = "localhost"
+from pi_userinfo import *
 
 class DateTimeEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -104,15 +99,22 @@ if __name__ == "__main__":
         print "doesn't appear to be a valid badge id"
         exit(1)
 
+    # get my username
+    with open(PI_USERNAME_FILE) as pfp:
+        PI_USERNAME = pfp.readline().strip()
+    if len(NEW_USER_PASSWORD) < 2:
+        print "the username is too short, needs to be > 6 chars"
+        exit(1)
+
     # get my password
-    with open(MY_USER_PASSWORD_FILE) as pfp:
-        MY_USER_PASSWORD = pfp.readline().strip()
+    with open(PI_USER_PASSWORD_FILE) as pfp:
+        PI_USER_PASSWORD = pfp.readline().strip()
     if len(NEW_USER_PASSWORD) < 6:
         print "the password is too short, needs to be > 6 chars"
         exit(1)
 
-    MY_TOKEN = get_token(MY_USERNAME, MY_USER_PASSWORD)
-    if len(MY_TOKEN) < 32:
+    MY_TOKEN = get_token(PI_USERNAME, PI_USER_PASSWORD)
+    if MY_TOKEN is None:
         print "problem getting token, aborting"
         exit(1)
 
