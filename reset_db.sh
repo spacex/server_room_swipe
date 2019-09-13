@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 rm -f ~/server_room_swipe/app.db
 rm -rf ~/server_room_swipe/migrations
 
