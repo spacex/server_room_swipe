@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from dateutil import parser
 from app import db, login
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin, current_user
@@ -72,7 +73,7 @@ class User(UserMixin, db.Model):
 
 class Scan(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    timestamp = db.Column(db.DateTime(timezone=True), index=True, default=datetime.now)
     username = db.Column(db.Integer, db.ForeignKey('user.username'))
     badge_id = db.Column(db.String(10), db.ForeignKey('user.badge_id'))
 
@@ -82,7 +83,7 @@ class Scan(db.Model):
         for field in ['username', 'badge_id', 'timestamp']:
             if field in data:
                 if field == 'timestamp':
-                    real_datetime = datetime.strptime(data[field], '%Y-%m-%dT%H:%M:%S.%f')
+                    real_datetime = parser.parse(data[field])
                     setattr(self, field, real_datetime)
                 else:
                     setattr(self, field, data[field])

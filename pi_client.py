@@ -1,5 +1,6 @@
 #!/usr/local/env python
 from evdev import InputDevice, categorize, ecodes
+from dateutil.tz import tzlocal
 import datetime
 import json
 import random
@@ -50,7 +51,8 @@ def get_a_badge_reading():
     return badge_read
 
 def request_register_scan(badge_reading):
-    now = datetime.datetime.utcnow()
+    localtz = tzlocal()
+    now = datetime.datetime.now(localtz)
     encoder = DateTimeEncoder()
     dtjson = encoder.encode({"timestamp": now, "badge_id": badge_reading})
     r = requests.post(
