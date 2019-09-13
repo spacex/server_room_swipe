@@ -38,6 +38,11 @@ def register_scan():
         return bad_request('must contain timestamp and badge id fields')
     if not User.query.filter_by(badge_id=data['badge_id']).first():
         return bad_request('unknown badge_id')
+    user = User.query.filter_by(badge_id=data['badge_id']).first()
+    if 'username' not in data:
+        data['username'] = user.username
+    elif not user:
+        return bad_request('invalid badge_id')
     scan = Scan()
     scan.from_dict(data)
     db.session.add(scan)

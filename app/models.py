@@ -32,6 +32,9 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    def get_user_from_badge(self, badge_id):
+        return check_password_hash(self.password_hash, password)
+
     def from_dict(self, data, new_user=False):
         for field in ['username', 'email', 'badge_id']:
             if field in data:
@@ -90,6 +93,10 @@ class Scan(db.Model):
 		'username': self.username,
 		'timestamp': self.timestamp,
                 }
+        return data
+
+    def to_list(self):
+        data = [self.badge_id, self.username, self.timestamp]
         return data
 
 class AdminView(ModelView):
