@@ -41,5 +41,5 @@ have created.
 
 # TODOs
 - Use a real web server instead of the one that comes with Flask
-- Make the UI less-ugly with CSS to make look and feel more consistent
-- API portion does not require authentication, it should
+- less ugly UI with CSS to make look and feel more consistent
+- Make this a real python package with requirements.txt, setup.py etc
