@@ -10,7 +10,7 @@ import sys
 
 PIONEER_BADGE = "1664282121"
 NEW_USER_PREFIX = "new_user_"
-NEW_USER_PASSWORD = "siuser!@#"
+NEW_USER_PASSWORD_FILE = ".new_user_pass"
 
 class DateTimeEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -72,4 +72,11 @@ def event_loop():
         request_register_scan(badge_read)
 
 if __name__ == "__main__":
+    # get default password from file
+    with open(NEW_USER_PASSWORD_FILE) as pfp:
+        NEW_USER_PASSWORD = pfp.readline().strip()
+    if len(NEW_USER_PASSWORD) < 6:
+        print "the password is too short, needs to be > 6 chars"
+        exit(1)
+
     event_loop()
