@@ -8,9 +8,9 @@ import requests
 import string
 import sys
 
-PIONEER_BADGE_FILE = ".pioneer_badge"
+PIONEER_BADGE_FILE = "pioneer_badge"
 NEW_USER_PREFIX = "new_user_"
-NEW_USER_PASSWORD_FILE = ".new_user_pass"
+NEW_USER_PASSWORD_FILE = "new_user_pass"
 
 class DateTimeEncoder(json.JSONEncoder):
     def default(self, obj):
