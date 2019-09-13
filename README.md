@@ -20,6 +20,9 @@ Server Room Swipe
 - `cd` into the repo
 - `echo <some_password> >new_user_pass` for a default new user password
 - `echo <some_badge_id> >pioneer_badge` for a default pioneer badge
+- `flask db init` creates database, only needs to be done once
+- `flask db migrate` migrates database if schema changes
+- `flask db upgrade` commits changes from migrate
 - `sudo ./run.sh |& tee server.log` to start the server
 - The server is available at the IP of the raspberry pi on port 80
 - `sudo ./quit.sh` to stop the server
