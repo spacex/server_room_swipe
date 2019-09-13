@@ -35,7 +35,6 @@ def request_create_user(new_badge):
         data=json.dumps(user_dict),
         headers={'Content-type': 'application/json'}
         )
-    print user_dict
     print r.text
 
 def get_a_badge_reading():
@@ -60,7 +59,6 @@ def request_register_scan(badge_reading):
         data=json.dumps(dtjson),
         headers={'Content-type': 'application/json'}
         )
-    print dtjson
     print r.text
 
 def event_loop():
