@@ -8,7 +8,7 @@ import requests
 import string
 import sys
 
-PIONEER_BADGE = "1664282121"
+PIONEER_BADGE_FILE = ".pioneer_badge"
 NEW_USER_PREFIX = "new_user_"
 NEW_USER_PASSWORD_FILE = ".new_user_pass"
 
@@ -77,6 +77,13 @@ if __name__ == "__main__":
         NEW_USER_PASSWORD = pfp.readline().strip()
     if len(NEW_USER_PASSWORD) < 6:
         print "the password is too short, needs to be > 6 chars"
+        exit(1)
+
+    # get default password from file
+    with open(PIONEER_BADGE_FILE) as pfp:
+        PIONEER_BADGE = pfp.readline().strip()
+    if len(PIONEER_BADGE) < 10:
+        print "doesn't appear to be a valid badge id"
         exit(1)
 
     event_loop()
