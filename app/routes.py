@@ -60,11 +60,13 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
+# can get here without login, but it's empty
 @app.route('/admin')
 def admin():
     return render_template('admin.html', title='Admin')
 
 @app.route('/export', methods=['GET', 'POST'])
+@login_required
 def download_log():
     form = ExportForm()
     if not form.validate_on_submit():

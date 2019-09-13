@@ -1,4 +1,5 @@
 from flask import url_for, g, abort, jsonify, request
+from flask_login import current_user
 from app import db
 from app.api import bp
 from app.models import User, Scan
@@ -7,15 +8,24 @@ from app.api.auth import token_auth
 import json
 
 @bp.route('/users/<int:id>', methods=['GET'])
+@token_auth.login_required
 def get_user(id):
+    # only admins can view users
+    if current_user.is_authenticated and not current_user.is_admin:
+        return bad_request("user doesn't have admin rights")
     return jsonify(User.query.get_or_404(id).to_dict())
 
 @bp.route('/scans/<int:id>', methods=['GET'])
+@token_auth.login_required
 def get_scan(id):
     return jsonify(Scan.query.get_or_404(id).to_dict())
 
 @bp.route('/users', methods=['POST'])
+@token_auth.login_required
 def create_user():
+    # only admins can add users
+    if current_user.is_authenticated and not current_user.is_admin:
+        return bad_request("user doesn't have admin rights")
     data = request.get_json() or {}
     if 'username' not in data or 'password' not in data or 'badge_id' not in data:
         return bad_request('must include username, badge_id and password fields')
@@ -31,6 +41,7 @@ def create_user():
     return response
 
 @bp.route('/scans', methods=['POST'])
+@token_auth.login_required
 def register_scan():
     data = request.get_json() or {}
     data = json.loads(data)
