@@ -14,7 +14,7 @@ result = db.engine.execute(b)
 # get my username
 with open(PI_USERNAME_FILE) as pfp:
     PI_USERNAME = pfp.readline().strip()
-if len(NEW_USER_PASSWORD) < 2:
+if len(PI_USER_PASSWORD) < 2:
     print "the username is too short, needs to be > 6 chars"
     exit(1)
 
