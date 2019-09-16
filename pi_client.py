@@ -48,6 +48,7 @@ def request_create_user(new_badge):
             'Authorization': 'Bearer ' + MY_TOKEN},
         )
     print r.text
+    return r.status_code
 
 def get_a_badge_reading():
     decode_dict = {2:"1", 3:"2", 4:"3", 5:"4", 6:"5", 7:"6", 8:"7", 9:"8", 10:"9", 11:"0"}
@@ -73,16 +74,30 @@ def request_register_scan(badge_reading):
             'Authorization': 'Bearer ' + MY_TOKEN},
         )
     print r.text
+    return r.status_code
 
 def event_loop():
+    auth_failure = False
     while True:
         badge_read = get_a_badge_reading()
         if badge_read == PIONEER_BADGE:
             # read the new badge
             new_badge = get_a_badge_reading()
-            request_create_user(new_badge)
+            if request_create_user(new_badge) == 401:
+                auth_failure = True
             badge_read = new_badge
         request_register_scan(badge_read)
+            if request_create_user(new_badge) == 401:
+                auth_failure = True
+        if auth_failure:
+            MY_TOKEN = get_token(PI_USERNAME, PI_USER_PASSWORD)
+            if MY_TOKEN is None:
+                print "problem getting token, aborting"
+                exit(1)
+            else:
+                auth_failure = False
+
+
 
 if __name__ == "__main__":
     # get default password from file
