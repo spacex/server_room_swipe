@@ -17,6 +17,7 @@
             {% endif %}
 			{% if  current_user.is_admin %}
             <a href="{{ url_for('admin') }}">DB Admin</a></p>
+            <a href="{{ url_for('register') }}">Add New User</a></p>
             {% endif %}
         </div>
         <hr>

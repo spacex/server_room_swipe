@@ -5,7 +5,7 @@ from flask import request, send_from_directory
 from flask_login import current_user, login_user, logout_user, login_required
 from datetime import datetime
 from app import app, db
-from app.forms import LoginForm, ExportForm
+from app.forms import LoginForm, ExportForm, RegistrationForm
 from app.models import User, Scan, AdminView
 from werkzeug.urls import url_parse
 from sqlalchemy import and_
@@ -84,4 +84,19 @@ def download_log():
 
         return write_csv(list_of_scans)
     return render_template('export.html', title='Export', form=form)
+
+@app.route('/register', methods=['GET', 'POST'])
+@login_required
+def register():
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        user = User(username=form.username.data, email=form.email.data,
+                is_admin=form.is_admin.data)
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash('Congratulations, you are now a registered user!')
+        return redirect(url_for('login'))
+    return render_template('register.html', title='Register', form=form)
+
 
