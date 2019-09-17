@@ -77,6 +77,7 @@ def request_register_scan(badge_reading):
     return r.status_code
 
 def event_loop():
+    global MY_TOKEN
     auth_failure = False
     while True:
         badge_read = get_a_badge_reading()
@@ -86,9 +87,8 @@ def event_loop():
             if request_create_user(new_badge) == 401:
                 auth_failure = True
             badge_read = new_badge
-        request_register_scan(badge_read)
-            if request_create_user(new_badge) == 401:
-                auth_failure = True
+        if request_register_scan(badge_read) == 401:
+            auth_failure = True
         if auth_failure:
             MY_TOKEN = get_token(PI_USERNAME, PI_USER_PASSWORD)
             if MY_TOKEN is None:
