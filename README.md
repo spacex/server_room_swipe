@@ -37,15 +37,16 @@ above for where that info is stored. A user with admin rights is the only person
 that can add users and change passwords.
 
 # Pioneer badge
-This is the badge you use to introduce new badges to the system. First scan
-the pioneer badge, then scan the new persons badge. As of now, that scan
-counts as a real scan and gets recorded in the Scans table. When the pioneer
-is used, a new user will be created in the database as "new\_user\_XXXXXX"
-where XXXXXX is an assortment of 6 random lowercase and uppercase letters.
-This user will have the password from repo/.new\_user\_pass that you should 
-have created.
+This is the badge you use to register new badges in the system. First scan
+the pioneer badge, then scan the new persons badge. This scan doesn't count
+as a real scan and won't get recorded in the Scans table until the next time
+the badge is scanned. When the pioneer badge is used, a new user will be
+created in the database as "new\_user\_XXXXXX" where XXXXXX is an assortment
+of 6 random lowercase and uppercase letters. This user will have the password
+from repo/.new\_user\_pass that you should have created.
 
 # TODOs
 - Use a real web server instead of the one that comes with Flask
 - less ugly UI with CSS to make look and feel more consistent
 - Make this a real python package with requirements.txt, setup.py etc
+- Add option for users to reset their password.

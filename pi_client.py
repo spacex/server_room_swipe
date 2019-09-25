@@ -78,26 +78,28 @@ def request_register_scan(badge_reading):
 
 def event_loop():
     global MY_TOKEN
-    auth_failure = False
+    req_status = 0
     while True:
         badge_read = get_a_badge_reading()
         if badge_read == PIONEER_BADGE:
             # read the new badge
             new_badge = get_a_badge_reading()
-            if request_create_user(new_badge) == 401:
-                auth_failure = True
+            req_status = request_create_user(new_badge)
+            rerun = request_create_user
             badge_read = new_badge
-        if request_register_scan(badge_read) == 401:
-            auth_failure = True
-        if auth_failure:
+        else:
+            # send scan info
+            req_status = request_register_scan(badge_read)
+            rerun = request_register_scan
+
+        # if our token has expired, get a new one
+        if req_status == 401:
             MY_TOKEN = get_token(PI_USERNAME, PI_USER_PASSWORD)
             if MY_TOKEN is None:
                 print "problem getting token, aborting"
                 exit(1)
             else:
-                auth_failure = False
-
-
+                rerun(badge_read)
 
 if __name__ == "__main__":
     # get default password from file
