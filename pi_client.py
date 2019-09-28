@@ -109,13 +109,6 @@ def event_loop():
                 rerun(badge_read)
 
 if __name__ == "__main__":
-    # get default password from file
-    with open(NEW_USER_PASSWORD_FILE) as pfp:
-        NEW_USER_PASSWORD = pfp.readline().strip()
-    if len(NEW_USER_PASSWORD) < 6:
-        print "the password is too short, needs to be > 6 chars"
-        exit(1)
-
     config = configparser.ConfigParser()
     config.read(CONFIG_FILE)
     
@@ -140,12 +133,24 @@ if __name__ == "__main__":
         print "Unable to read badge configuration."
         exit(1)
 
+    PIONEER_BADGE = config['badges']['pioneer']
+
     # check the pioneer badge
     if len(PIONEER_BADGE) < 10:
         print "doesn't appear to be a valid badge id"
         exit(1)
 
-    PIONEER_BADGE = config['badges']['pioneer']
+    if 'new_user' not in config.sections():
+        print "Unable to read new user configuration."
+        exit(1)
+
+    NEW_USER_PREFIX = config['new_user']['prefix']
+    NEW_USER_PASSWORD = config['new_user']['pass']
+
+    # check the new user password
+    if len(NEW_USER_PASSWORD) < 6:
+        print "the password is too short, needs to be > 6 chars"
+        exit(1)
 
     get_db_token()
 
