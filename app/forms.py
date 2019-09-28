@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from datetime import datetime, timedelta
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from wtforms.fields.html5 import DateField
 from app.models import User
@@ -26,6 +26,8 @@ class RegistrationForm(FlaskForm):
             raise ValidationError('Please use a different username.')
 
 class ExportForm(FlaskForm):
+    export_type = SelectField('Export Type', choices=[('xls', 'XLS'), ('csv', 'CSV')],
+        default='xls')
     start_date = DateField('Start Date', default=datetime.today, format='%Y-%m-%d')
     end_date = DateField('End Date', default=datetime.today, format='%Y-%m-%d')
     submit = SubmitField('Export')

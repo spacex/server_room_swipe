@@ -69,20 +69,26 @@ def admin():
 @login_required
 def download_log():
     form = ExportForm()
-    if not form.validate_on_submit():
-        flash( "Invalid data")
-    else:
-        start_time_dt =  form.start_date.data
-        end_time_dt =  form.end_date.data
-        # get all (scan, username, badge_id) records > start_time and < end_time
-        desired_scans = Scan.query.filter(and_(Scan.timestamp >= start_time_dt,
-            Scan.timestamp <= end_time_dt)).all()
-        #return write_csv(desired_scans)
-        list_of_scans = []
-        for this_scan in desired_scans:
-            list_of_scans.append(this_scan.to_list())
+    if request.method == 'POST':
+        if not form.validate_on_submit():
+            flash( "Invalid data")
+        else:
+            start_time_dt =  form.start_date.data
+            end_time_dt =  form.end_date.data
+            # get all (scan, username, badge_id) records > start_time and < end_time
+            desired_scans = Scan.query.filter(and_(Scan.timestamp >= start_time_dt,
+                Scan.timestamp <= end_time_dt)).all()
+            #return write_csv(desired_scans)
+            list_of_scans = []
+            for this_scan in desired_scans:
+                list_of_scans.append(this_scan.to_list())
 
-        return write_csv(list_of_scans)
+            if form.export_type.data == 'xls':
+                return write_xls(list_of_scans)
+            elif form.export_type.data == 'csv':
+                return write_csv(list_of_scans)
+            else:
+                flash("Invalid export type: '%s'" % form.export_type.data)
     return render_template('export.html', title='Export', form=form)
 
 @app.route('/register', methods=['GET', 'POST'])
