@@ -9,8 +9,6 @@ import requests
 import string
 import sys
 
-from pi_userinfo import *
-
 from pi_userinfo import CONFIG_FILE
 
 import configparser
@@ -26,7 +24,7 @@ class DateTimeEncoder(json.JSONEncoder):
 
 def get_token(username, password):
     r = requests.post(
-        'http://'+HOSTNAME+'/api/tokens',
+        'http://'+API_HOSTNAME+'/api/tokens',
         auth=HTTPBasicAuth(username, password)
         )
     if r.status_code != 200:
@@ -46,7 +44,7 @@ def request_create_user(new_badge):
     user_dict = { "username": new_user_id, "password": NEW_USER_PASSWORD,
             "badge_id": new_badge }
     r = requests.post(
-        'http://'+HOSTNAME+'/api/users',
+        'http://'+API_HOSTNAME+'/api/users',
         data=json.dumps(user_dict),
         headers={'Content-type': 'application/json',
             'Authorization': 'Bearer ' + MY_TOKEN},
@@ -72,7 +70,7 @@ def request_register_scan(badge_reading):
     encoder = DateTimeEncoder()
     dtjson = encoder.encode({"timestamp": now, "badge_id": badge_reading})
     r = requests.post(
-        'http://'+HOSTNAME+'/api/scans',
+        'http://'+API_HOSTNAME+'/api/scans',
         data=json.dumps(dtjson),
         headers={'Content-type': 'application/json',
             'Authorization': 'Bearer ' + MY_TOKEN},
@@ -151,6 +149,12 @@ if __name__ == "__main__":
     if len(NEW_USER_PASSWORD) < 6:
         print "the password is too short, needs to be > 6 chars"
         exit(1)
+
+    if 'api' not in config.sections():
+        print "Unable to read api configuration."
+        exit(1)
+
+    API_HOSTNAME = config['api']['hostname']
 
     get_db_token()
 
