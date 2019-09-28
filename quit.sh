@@ -4,13 +4,24 @@ if [[ $EUID -ne 0 ]]; then
    echo "This script must be run as root"
    exit 1
 fi
-cd /home/pi/server_room_swipe
 
-if [ -f server_room_swipe.pids ]; then
-	for pid in `cat server_room_swipe.pids` ; do
-		kill $pid
-	done
-else
-	echo "No pidfile found"
-	exit 1
-fi
+function kill_pid_file() {
+	local pid_file="$1"
+
+	if [ -f "${pid_file}" ]; then
+		for pid in `cat "${pid_file}"` ; do
+			kill $pid
+			echo > "${pid_file}"
+		done
+	else
+		echo "No pidfile found"
+		exit 1
+	fi
+}
+
+pushd $(dirname $0) &> /dev/null
+
+kill_pid_file "server.pid"
+kill_pid_file "client.pid"
+
+popd &> /dev/null

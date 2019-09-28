@@ -3,3 +3,5 @@ app.db
 migrations
 server.log
 server.pid
+client.log
+client.pid
