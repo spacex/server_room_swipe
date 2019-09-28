@@ -19,6 +19,6 @@ app.register_blueprint(api_bp, url_prefix='/api')
 from app import routes, models
 admin.add_view(models.AdminView(models.User, db.session, name='Users'))
 admin.add_view(models.AdminView(models.Scan, db.session, name='Scans'))
-admin.add_link(models.LogoutMenuLink(name='Logout', category='', url="/logout"))
 admin.add_link(models.LogoutMenuLink(name='Export Scans', category='', url="/export"))
+admin.add_link(models.LogoutMenuLink(name='Logout', category='', url="/logout"))
 

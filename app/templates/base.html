@@ -7,17 +7,18 @@
       {% endif %}
     </head>
     <body>
-		<div>
-			ServerRoomSwipe:
-			<a href="{{ url_for('index') }}">Home</a>
+        <div>
+            ServerRoomSwipe:
+            <a href="{{ url_for('index') }}">Home</a>
             {% if current_user.is_anonymous %}
             <a href="{{ url_for('login') }}">Login</a>
             {% else %}
             <a href="{{ url_for('logout') }}">Logout</a>
             {% endif %}
-			{% if  current_user.is_admin %}
+            {% if  current_user.is_admin %}
             <a href="{{ url_for('admin') }}">DB Admin</a></p>
             <a href="{{ url_for('register') }}">Add New User</a></p>
+            <a href="{{ url_for('download_log') }}">Export Scans</a></p>
             {% endif %}
         </div>
         <hr>
@@ -30,6 +31,6 @@
         </ul>
         {% endif %}
         {% endwith %}
-		{% block content %}{% endblock %}
+        {% block content %}{% endblock %}
 	</body>
 </html>
