@@ -116,13 +116,6 @@ if __name__ == "__main__":
         print "the password is too short, needs to be > 6 chars"
         exit(1)
 
-    # get pioneer badge
-    with open(PIONEER_BADGE_FILE) as pfp:
-        PIONEER_BADGE = pfp.readline().strip()
-    if len(PIONEER_BADGE) < 10:
-        print "doesn't appear to be a valid badge id"
-        exit(1)
-
     config = configparser.ConfigParser()
     config.read(CONFIG_FILE)
     
@@ -142,6 +135,17 @@ if __name__ == "__main__":
     if len(DB_PASS) < 6:
         print "the password is too short, needs to be > 6 chars"
         exit(1)
+
+    if 'badges' not in config.sections():
+        print "Unable to read badge configuration."
+        exit(1)
+
+    # check the pioneer badge
+    if len(PIONEER_BADGE) < 10:
+        print "doesn't appear to be a valid badge id"
+        exit(1)
+
+    PIONEER_BADGE = config['badges']['pioneer']
 
     get_db_token()
 
