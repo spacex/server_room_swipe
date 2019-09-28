@@ -54,7 +54,7 @@ def request_create_user(new_badge):
 
 def get_a_badge_reading():
     decode_dict = {2:"1", 3:"2", 4:"3", 5:"4", 6:"5", 7:"6", 8:"7", 9:"8", 10:"9", 11:"0"}
-    dev = InputDevice('/dev/input/event0')
+    dev = InputDevice(INPUT_DEVICE)
     badge_read = ''
     for event in dev.read_loop():
         if event.type == ecodes.EV_KEY and event.value == 01:
@@ -155,6 +155,12 @@ if __name__ == "__main__":
         exit(1)
 
     API_HOSTNAME = config['api']['hostname']
+
+    if 'scanner' not in config.sections():
+        print "Unable to read scanner configuration."
+        exit(1)
+
+    INPUT_DEVICE = config['scanner']['input_device']
 
     get_db_token()
 
