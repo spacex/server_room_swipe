@@ -23,7 +23,7 @@ python pi_client.py &> server.log &
 pi_client_pid=$!
 echo "Started badge reader on PID: $pi_client_pid"
 
-echo $pi_client_pid >server_room_swipe.pids
-echo $flask_pid >>server_room_swipe.pids
+echo $pi_client_pid > server.pids
+echo $flask_pid >> server.pids
 
 popd &> /dev/null

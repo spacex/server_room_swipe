@@ -84,8 +84,13 @@ def get_db_token():
         print "problem getting token, aborting"
         exit(1)
 
+    return MY_TOKEN
+
 def event_loop():
     global MY_TOKEN
+
+    MY_TOKEN = get_db_token()
+
     req_status = 0
     while True:
         badge_read = get_a_badge_reading()
@@ -102,7 +107,7 @@ def event_loop():
 
         # if our token has expired, get a new one
         if req_status == 401:
-            get_db_token()
+            MY_TOKEN = get_db_token()
             if MY_TOKEN is not None:
                 rerun(badge_read)
 
@@ -161,7 +166,5 @@ if __name__ == "__main__":
         exit(1)
 
     INPUT_DEVICE = config['scanner']['input_device']
-
-    get_db_token()
 
     event_loop()
