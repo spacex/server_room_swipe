@@ -98,7 +98,7 @@ def event_loop():
 
         # if our token has expired, get a new one
         if req_status == 401:
-            MY_TOKEN = get_token(PI_USERNAME, PI_USER_PASSWORD)
+            MY_TOKEN = get_token(DB_USER, DB_PASS)
             if MY_TOKEN is None:
                 print "problem getting token, aborting"
                 exit(1)
