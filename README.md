@@ -18,9 +18,9 @@ Server Room Swipe
 ### Steps
 - `git clone https://github.com/lime45/server_room_swipe.git`
 - `cd` into the repo
-- `echo <some_password> >new_user_pass` for a default new user password
-- `echo <some_badge_id> >pioneer_badge` for a default pioneer badge
 - edit config.ini and put in the DB username/password
+- edit config.ini and input pioneer badge id
+- edit config.ini and input new user password
 - `./reset_db.sh` to get a fresh db with just the pi's user account
 - `flask db init` creates database, only needs to be done once
 - `flask db migrate` migrates database if schema changes
@@ -42,7 +42,7 @@ as a real scan and won't get recorded in the Scans table until the next time
 the badge is scanned. When the pioneer badge is used, a new user will be
 created in the database as "new\_user\_XXXXXX" where XXXXXX is an assortment
 of 6 random lowercase and uppercase letters. This user will have the password
-from repo/.new\_user\_pass that you should have created.
+from the new user password entered into config.ini that you should have created.
 
 # TODOs
 - Use a real web server instead of the one that comes with Flask
