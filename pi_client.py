@@ -80,6 +80,12 @@ def request_register_scan(badge_reading):
     print r.text
     return r.status_code
 
+def get_db_token():
+    MY_TOKEN = get_token(DB_USER, DB_PASS)
+    if MY_TOKEN is None:
+        print "problem getting token, aborting"
+        exit(1)
+
 def event_loop():
     global MY_TOKEN
     req_status = 0
@@ -98,11 +104,8 @@ def event_loop():
 
         # if our token has expired, get a new one
         if req_status == 401:
-            MY_TOKEN = get_token(DB_USER, DB_PASS)
-            if MY_TOKEN is None:
-                print "problem getting token, aborting"
-                exit(1)
-            else:
+            get_db_token()
+            if MY_TOKEN is not None:
                 rerun(badge_read)
 
 if __name__ == "__main__":
@@ -140,9 +143,6 @@ if __name__ == "__main__":
         print "the password is too short, needs to be > 6 chars"
         exit(1)
 
-    MY_TOKEN = get_token(DB_USER, DB_PASS)
-    if MY_TOKEN is None:
-        print "problem getting token, aborting"
-        exit(1)
+    get_db_token()
 
     event_loop()
