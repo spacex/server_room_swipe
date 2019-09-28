@@ -11,6 +11,10 @@ import sys
 
 from pi_userinfo import *
 
+from pi_userinfo import CONFIG_FILE
+
+import configparser
+
 class DateTimeEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, (datetime.datetime, datetime.date, datetime.time)):
@@ -116,21 +120,27 @@ if __name__ == "__main__":
         print "doesn't appear to be a valid badge id"
         exit(1)
 
-    # get my username
-    with open(PI_USERNAME_FILE) as pfp:
-        PI_USERNAME = pfp.readline().strip()
-    if len(NEW_USER_PASSWORD) < 2:
-        print "the username is too short, needs to be > 6 chars"
+    config = configparser.ConfigParser()
+    config.read(CONFIG_FILE)
+    
+    if 'database' not in config.sections():
+        print "Unable to read database configuration."
+        exit(1)
+    
+    DB_USER = config['database']['user']
+    DB_PASS = config['database']['pass']
+
+    # check the username
+    if len(DB_USER) < 2:
+        print "the username is too short, needs to be > 2 chars"
         exit(1)
 
-    # get my password
-    with open(PI_USER_PASSWORD_FILE) as pfp:
-        PI_USER_PASSWORD = pfp.readline().strip()
-    if len(NEW_USER_PASSWORD) < 6:
+    # check the password
+    if len(DB_PASS) < 6:
         print "the password is too short, needs to be > 6 chars"
         exit(1)
 
-    MY_TOKEN = get_token(PI_USERNAME, PI_USER_PASSWORD)
+    MY_TOKEN = get_token(DB_USER, DB_PASS)
     if MY_TOKEN is None:
         print "problem getting token, aborting"
         exit(1)
