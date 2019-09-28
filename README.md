@@ -8,7 +8,7 @@ Server Room Swipe
 - flask-admin      `pip install flask-admin`
 - flask-httpauth   `pip install flask-httpauth`
 - flask-login      `pip install flask-login`
-- flask-migigrate  `pip install flask-migrate`
+- flask-migrate  `pip install flask-migrate`
 - flask-sqlalchemy `pip install flask-sqlalchemy`
 - flask-wtforms    `pip install flask-wtf`
 - evdev            `pip install evdev`
