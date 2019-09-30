@@ -41,14 +41,17 @@ def randomString(stringLength=6):
 
 def request_create_user(new_badge):
     new_user_id = NEW_USER_PREFIX + randomString()
-    user_dict = { "username": new_user_id, "password": NEW_USER_PASSWORD,
-            "badge_id": new_badge }
+    user_dict = {
+        "username": new_user_id,
+        "password": NEW_USER_PASSWORD,
+        "badge_id": new_badge,
+    }
     r = requests.post(
         'http://'+API_HOSTNAME+'/api/users',
         data=json.dumps(user_dict),
         headers={'Content-type': 'application/json',
             'Authorization': 'Bearer ' + MY_TOKEN},
-        )
+    )
     print r.text
     return r.status_code
 
@@ -68,7 +71,11 @@ def request_register_scan(badge_reading):
     localtz = tzlocal()
     now = datetime.datetime.now(localtz)
     encoder = DateTimeEncoder()
-    dtjson = encoder.encode({"timestamp": now, "badge_id": badge_reading})
+    dtjson = encoder.encode({
+        "timestamp": now,
+        "badge_id": badge_reading,
+        "device_name": DEVICE_NAME,
+    })
     r = requests.post(
         'http://'+API_HOSTNAME+'/api/scans',
         data=json.dumps(dtjson),
@@ -166,5 +173,8 @@ if __name__ == "__main__":
         exit(1)
 
     INPUT_DEVICE = config['scanner']['input_device']
+    DEVICE_NAME = config['scanner']['device_name']
+
+    print "Starting client on '%s' for '%s'" % (INPUT_DEVICE, DEVICE_NAME)
 
     event_loop()

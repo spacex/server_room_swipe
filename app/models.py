@@ -79,12 +79,12 @@ class Scan(db.Model):
     timestamp = db.Column(db.DateTime(timezone=True), index=True, default=datetime.now)
     username = db.Column(db.Integer, db.ForeignKey('user.username'))
     badge_id = db.Column(db.String(10), db.ForeignKey('user.badge_id'))
-    door_name = db.Column(db.String(128))
+    device_name = db.Column(db.String(128))
 
     scanned_user = db.relationship("User", foreign_keys=[badge_id])
 
     def from_dict(self, data):
-        for field in ['username', 'badge_id', 'timestamp']:
+        for field in ['username', 'badge_id', 'timestamp', 'device_name']:
             if field in data:
                 if field == 'timestamp':
                     real_datetime = parser.parse(data[field])
@@ -93,16 +93,15 @@ class Scan(db.Model):
                     setattr(self, field, data[field])
 
     def to_dict(self):
-        data = {
-		'badge_id': self.badge_id,
-		'username': self.username,
-		'timestamp': self.timestamp,
-                }
-        return data
+        return {
+            'username': self.username,
+            'badge_id': self.badge_id,
+	    'timestamp': self.timestamp,
+            'device_name': self.device_name,
+        }
 
     def to_list(self):
-        data = [self.badge_id, self.username, self.timestamp]
-        return data
+        return [self.badge_id, self.username, self.timestamp]
 
 class AdminView(ModelView):
     @expose('/admin')

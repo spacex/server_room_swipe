@@ -45,15 +45,17 @@ def create_user():
 def register_scan():
     data = request.get_json() or {}
     data = json.loads(data)
+
     if 'timestamp' not in data or 'badge_id' not in data:
         return bad_request('must contain timestamp and badge id fields')
-    if not User.query.filter_by(badge_id=data['badge_id']).first():
-        return bad_request('unknown badge_id')
     user = User.query.filter_by(badge_id=data['badge_id']).first()
+    if not user:
+        return bad_request('unknown badge_id')
     if 'username' not in data:
         data['username'] = user.username
-    elif not user:
-        return bad_request('invalid badge_id')
+    if 'device_name' not in data:
+        return bad_request('must contain device_name')
+
     scan = Scan()
     scan.from_dict(data)
     db.session.add(scan)
