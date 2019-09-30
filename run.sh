@@ -30,7 +30,7 @@ case "$1" in
 		echo $pi_client_pid > client.pid
 		echo "Started badge reader on PID: $pi_client_pid"
 		;;
-	default)
+	*)
 		$0 server
 		$0 client
 		;;

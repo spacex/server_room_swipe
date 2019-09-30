@@ -77,14 +77,13 @@ class User(UserMixin, db.Model):
 class Scan(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     timestamp = db.Column(db.DateTime(timezone=True), index=True, default=datetime.now)
-    username = db.Column(db.Integer, db.ForeignKey('user.username'))
     badge_id = db.Column(db.String(10), db.ForeignKey('user.badge_id'))
     device_name = db.Column(db.String(128))
 
     scanned_user = db.relationship("User", foreign_keys=[badge_id])
 
     def from_dict(self, data):
-        for field in ['username', 'badge_id', 'timestamp', 'device_name']:
+        for field in ['badge_id', 'timestamp', 'device_name']:
             if field in data:
                 if field == 'timestamp':
                     real_datetime = parser.parse(data[field])
@@ -94,14 +93,17 @@ class Scan(db.Model):
 
     def to_dict(self):
         return {
-            'username': self.username,
             'badge_id': self.badge_id,
-	    'timestamp': self.timestamp,
+            'timestamp': self.timestamp,
             'device_name': self.device_name,
         }
 
     def to_list(self):
-        return [self.badge_id, self.username, self.timestamp]
+        return [self.badge_id, self.timestamp, self.device_name]
+
+class PioneerBadge(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    badge_id = db.Column(db.String(10))
 
 class AdminView(ModelView):
     @expose('/admin')

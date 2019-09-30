@@ -11,6 +11,16 @@ from werkzeug.urls import url_parse
 from sqlalchemy import and_
 import xlsxwriter
 
+def get_user_info_from_name_map(name_map, badge_id):
+    if badge_id not in name_map:
+        user = User.query.filter_by(badge_id=badge_id).first()
+        if user:
+            name_map[badge_id] = (user.username, user.first_name, user.last_name)
+        else:
+            name_map[badge_id] = ('UNKNOWN USER', 'UNKNOWN', 'USER')
+
+    return name_map[badge_id]
+
 def write_csv(data_list):
     # delete any possible old files
     os.system("rm -f /tmp/tmp.csv")
@@ -19,14 +29,16 @@ def write_csv(data_list):
         # write header
         w.writerow(('timestamp', 'user', 'badge_id'))
 
+        name_map = {}
         # write each log item
         for item in data_list:
             # in the db, the order will be: badge_id, user, timestamp
             # so reorder them here to match 
+            user = get_user_info_from_name_map(name_map, item.badge_id)
             w.writerow([
-                item[2].isoformat(),  # format datetime as string
-                item[1],
-                item[0],
+                item.timestamp.isoformat(),  # format datetime as string
+                user[0],
+                item.badge_id,
             ])
     return send_from_directory('/tmp/', 'tmp.csv',
          mimetype='text/csv',
@@ -52,16 +64,14 @@ def write_xlsx(data_list):
     index = 1
     name_map = {}
     for item in data_list:
-        if item.username not in name_map:
-            user = User.query.filter_by(username=item.username).first()
-            name_map[item.username] = (user.first_name, user.last_name)
+        user = get_user_info_from_name_map(name_map, item.badge_id)
 
         worksheet.write_row(index, 0, (
-            name_map[item.username][0],
-            name_map[item.username][1],
+            user[1],
+            user[2],
             item.badge_id,
             item.timestamp.isoformat(),
-            item.door_name,
+            item.device_name,
             )
         )
 
@@ -119,15 +129,11 @@ def download_log():
             # get all (scan, username, badge_id) records > start_time and < end_time
             desired_scans = Scan.query.filter(and_(Scan.timestamp >= start_time_dt,
                 Scan.timestamp <= end_time_dt)).all()
-            #return write_csv(desired_scans)
-            list_of_scans = []
-            for this_scan in desired_scans:
-                list_of_scans.append(this_scan.to_list())
 
             if form.export_type.data == 'xlsx':
                 return write_xlsx(desired_scans)
             elif form.export_type.data == 'csv':
-                return write_csv(list_of_scans)
+                return write_csv(desired_scans)
             else:
                 flash("Invalid export type: '%s'" % form.export_type.data)
     return render_template('export.html', title='Export', form=form)
