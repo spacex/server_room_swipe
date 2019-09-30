@@ -3,6 +3,7 @@ Server Room Swipe
 
 # Installation
 ### Prerequisites
+- sqlite `apt install sqlite`
 - python 2.7
 - python-pip `apt install python-pip`
 - flask-admin      `pip install flask-admin`
