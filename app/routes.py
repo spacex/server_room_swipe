@@ -50,13 +50,18 @@ def write_xlsx(data_list):
 
     # There must be a more python-y way to do this, that uses data_list.count()
     index = 1
+    name_map = {}
     for item in data_list:
+        if item.username not in name_map:
+            user = User.query.filter_by(username=item.username).first()
+            name_map[item.username] = (user.first_name, user.last_name)
+
         worksheet.write_row(index, 0, (
-            item[1],
-            'last name',
-            item[0],
-            item[2].isoformat(),
-            'device name',
+            name_map[item.username][0],
+            name_map[item.username][1],
+            item.badge_id,
+            item.timestamp.isoformat(),
+            item.door_name,
             )
         )
 
@@ -120,7 +125,7 @@ def download_log():
                 list_of_scans.append(this_scan.to_list())
 
             if form.export_type.data == 'xlsx':
-                return write_xlsx(list_of_scans)
+                return write_xlsx(desired_scans)
             elif form.export_type.data == 'csv':
                 return write_csv(list_of_scans)
             else:

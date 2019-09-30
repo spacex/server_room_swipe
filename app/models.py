@@ -17,6 +17,8 @@ def load_user(id):
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
+    first_name = db.Column(db.String(128))
+    last_name = db.Column(db.String(128))
     password_hash = db.Column(db.String(128))
     is_admin = db.Column(db.Boolean)
     email = db.Column(db.String(120), index=True, unique=True)
@@ -77,6 +79,7 @@ class Scan(db.Model):
     timestamp = db.Column(db.DateTime(timezone=True), index=True, default=datetime.now)
     username = db.Column(db.Integer, db.ForeignKey('user.username'))
     badge_id = db.Column(db.String(10), db.ForeignKey('user.badge_id'))
+    door_name = db.Column(db.String(128))
 
     scanned_user = db.relationship("User", foreign_keys=[badge_id])
 
