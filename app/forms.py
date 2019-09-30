@@ -26,8 +26,8 @@ class RegistrationForm(FlaskForm):
             raise ValidationError('Please use a different username.')
 
 class ExportForm(FlaskForm):
-    export_type = SelectField('Export Type', choices=[('xls', 'XLS'), ('csv', 'CSV')],
-        default='xls')
+    export_type = SelectField('Export Type', choices=[('xlsx', 'XLSX'), ('csv', 'CSV')],
+        default='xlsx')
     start_date = DateField('Start Date', default=datetime.today, format='%Y-%m-%d')
     end_date = DateField('End Date', default=datetime.today, format='%Y-%m-%d')
     submit = SubmitField('Export')

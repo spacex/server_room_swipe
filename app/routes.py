@@ -83,8 +83,8 @@ def download_log():
             for this_scan in desired_scans:
                 list_of_scans.append(this_scan.to_list())
 
-            if form.export_type.data == 'xls':
-                return write_xls(list_of_scans)
+            if form.export_type.data == 'xlsx':
+                return write_xlsx(list_of_scans)
             elif form.export_type.data == 'csv':
                 return write_csv(list_of_scans)
             else:
