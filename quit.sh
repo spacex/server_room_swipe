@@ -21,7 +21,17 @@ function kill_pid_file() {
 
 pushd $(dirname $0) &> /dev/null
 
-kill_pid_file "server.pid"
-kill_pid_file "client.pid"
+case $1 in
+	server)
+		kill_pid_file "server.pid"
+		;;
+	client)
+		kill_pid_file "client.pid"
+		;;
+	*)
+		kill_pid_file "server.pid"
+		kill_pid_file "client.pid"
+		;;
+esac
 
 popd &> /dev/null
