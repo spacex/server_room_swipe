@@ -9,6 +9,7 @@ from app.forms import LoginForm, ExportForm, RegistrationForm
 from app.models import User, Scan, AdminView
 from werkzeug.urls import url_parse
 from sqlalchemy import and_
+import xlsxwriter
 
 def write_csv(data_list):
     # delete any possible old files
@@ -31,6 +32,41 @@ def write_csv(data_list):
          mimetype='text/csv',
          attachment_filename='scans.csv',
          as_attachment=True)
+
+def write_xlsx(data_list):
+    os.system("rm -f /tmp/tmp.xlsx")
+
+    workbook = xlsxwriter.Workbook('/tmp/tmp.xlsx', {'in_memory': True})
+    worksheet = workbook.add_worksheet('Door Access Report')
+
+    worksheet.write_row(0, 0, (
+        'First Name',
+        'Last Name',
+        'Card Number',
+        'Event Date and Time',
+        'Device Name',
+        )
+    )
+
+    # There must be a more python-y way to do this, that uses data_list.count()
+    index = 1
+    for item in data_list:
+        worksheet.write_row(index, 0, (
+            item[1],
+            'last name',
+            item[0],
+            item[2].isoformat(),
+            'device name',
+            )
+        )
+
+        index += 1
+
+    workbook.close()
+    return send_from_directory('/tmp/', 'tmp.xlsx',
+        mimetype='application/vnd.openxmlformates-offiedocument.spreadsheetml.sheet',
+        attachment_filename='scans.xlsx',
+        as_attachment=True)
 
 @app.route('/')
 @app.route('/index')

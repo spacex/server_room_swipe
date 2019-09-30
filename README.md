@@ -14,6 +14,7 @@ Server Room Swipe
 - evdev            `pip install evdev`
 - pytz             `pip install pytz`
 - requests         `pip install requests`
+- xlsxwriter       `pip install xlsxwriter`
 
 ### Steps
 - `git clone https://github.com/lime45/server_room_swipe.git`
